@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed;
     public float walkSpeed;
     public float sprintSpeed;
+    public float swingSpeed;
 
     public float groundDrag;
 
@@ -50,8 +51,11 @@ public class PlayerMovement : MonoBehaviour
         walking,
         sprinting,
         crouching,
+        swinging,
         air
     }
+
+    public bool swinging;
 
     Rigidbody rb;
 
@@ -86,8 +90,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate(){
         movePlayer();
     }
 
@@ -143,14 +146,26 @@ public class PlayerMovement : MonoBehaviour
             moveSpeed = walkSpeed;
         }
 
+        else if(swinging){
+            state = MovementState.swinging;
+            moveSpeed = swingSpeed;
+        }
+
         // Airborne
-        else{
+        else {
             state = MovementState.air;
         }
 
     }
 
     private void movePlayer(){
+
+        // Check if swinging
+        if (swinging){
+            return;
+        }
+
+        // Calculate current ddirection of motion
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         // Kids on the slope
