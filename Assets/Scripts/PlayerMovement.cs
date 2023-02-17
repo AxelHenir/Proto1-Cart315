@@ -42,6 +42,11 @@ public class PlayerMovement : MonoBehaviour
     [Header ("HUD Data")]
     public TextMeshProUGUI speedText;
 
+    [Header ("Respawning")]
+    public int OutOfBoundsY;
+    public GameObject respawnPoint;
+
+
     public Transform orientation;
 
     float horizontalInput;
@@ -64,8 +69,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start(){
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
@@ -75,15 +79,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
-    {
+    private void Update(){
     
+        // Check if grounded
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight*0.5f + 0.2f, whatIsGround);
 
         playerInput();
         SpeedControl();
         StateHandler();
         updateHUD();
+        checkBounds();
 
         // Handle drag
         if(grounded){
@@ -95,13 +100,19 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    // Updates the player's HUD
-    private void updateHUD(){
-        speedText.text = "Velocity: " + rb.velocity.magnitude.ToString("0.00");
-    }
-
     private void FixedUpdate(){
         movePlayer();
+    }
+
+    private void respawn(){
+        rb.position = respawnPoint.transform.position;
+    }
+
+    private void checkBounds(){
+        if(rb.position.y < OutOfBoundsY){
+            Debug.Log("Repsawning... Out of bounds");
+            respawn();
+        }
     }
 
     private void playerInput(){
@@ -255,6 +266,11 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetSlopeMoveDirection(){
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+
+    // Updates the player's HUD
+    private void updateHUD(){
+        speedText.text = "Velocity: " + rb.velocity.magnitude.ToString("0.00");
     }
     
 }

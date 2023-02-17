@@ -25,6 +25,7 @@ public class Swinging : MonoBehaviour
     public float horizontalThrustForce;
     public float forwardThrustForce;
     public float extendCableSpeed;
+    public float cableReelInSpeed;
 
     [Header ("Prediction")]
     public RaycastHit predictionHit;
@@ -126,7 +127,7 @@ public class Swinging : MonoBehaviour
         if (Input.GetKey(KeyCode.Space)){
 
             Vector3 directionToPoint = swingPoint - transform.position;
-            rb.AddForce(directionToPoint.normalized * forwardThrustForce * Time.deltaTime);
+            rb.AddForce(directionToPoint.normalized * cableReelInSpeed * Time.deltaTime);
 
             float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
 
