@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -37,6 +38,9 @@ public class PlayerMovement : MonoBehaviour
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
+
+    [Header ("HUD Data")]
+    public TextMeshProUGUI speedText;
 
     public Transform orientation;
 
@@ -79,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
         playerInput();
         SpeedControl();
         StateHandler();
+        updateHUD();
 
         // Handle drag
         if(grounded){
@@ -88,6 +93,11 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = 0;
         }
 
+    }
+
+    // Updates the player's HUD
+    private void updateHUD(){
+        speedText.text = "Velocity: " + rb.velocity.magnitude.ToString("0.00");
     }
 
     private void FixedUpdate(){
